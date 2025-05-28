@@ -1,32 +1,32 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 
 export default function RecipeCard({ recipe, onPress }) {
   return (
-    <TouchableOpacity onPress={onPress} style={styles.card}>
+    <TouchableOpacity style={styles.card} onPress={onPress}>
       <Text style={styles.title}>{recipe.title}</Text>
-      <Text style={styles.description}>{recipe.shortDescription}</Text>
+      <Text style={styles.description}>{recipe.description}</Text>
     </TouchableOpacity>
   );
 }
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: '#FF8C00',
-    padding: 16,
-    marginVertical: 10,
-    marginHorizontal: 18,
-    borderRadius: 12,
-    elevation: 2,
+    backgroundColor: '#f5f5dc',
+    padding: 12,
+    marginVertical: 8,
+    borderRadius: 8,
+    borderColor: '#ccc',
+    borderWidth: 1,
   },
   title: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#5e3600',
+    color: '#4e2e00',
   },
   description: {
+    marginTop: 4,
     fontSize: 14,
-    color: '#7a5e42',
-    marginTop: 10,
+    color: '#5a4333',
   },
 });
