@@ -1,4 +1,3 @@
-![Uploading image.png…]()
-![Uploading image.png…]()
-![Uploading image.png…]()
+# AppReceitasBD
 
+Aplicativo de receitas utilizando React Native (Expo) e SQLite.
