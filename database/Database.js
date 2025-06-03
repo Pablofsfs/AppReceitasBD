@@ -1,60 +1,43 @@
 import * as SQLite from 'expo-sqlite';
+import { Text, View, Button } from 'react-native';
+import { useEffect, useState } from 'react';
 
-const db = SQLite.openDatabase('recipes.db');
+const db = SQLite.openDatabase('test.db');
 
-export function createTables() {
-  db.transaction(tx => {
-    tx.executeSql(
-      `CREATE TABLE IF NOT EXISTS recipes (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        title TEXT,
-        description TEXT,
-        instructions TEXT
-      );`
-    );
-  });
-}
+export default function App() {
+  const [result, setResult] = useState('No result yet');
 
-export function getRecipes(callback) {
-  db.transaction(tx => {
-    tx.executeSql(
-      'SELECT * FROM recipes;',
-      [],
-      (_, { rows: { _array } }) => callback(_array),
-      (_, error) => { console.log(error); return false; }
-    );
-  });
-}
+  useEffect(() => {
+    db.transaction(tx => {
+      tx.executeSql(
+        'CREATE TABLE IF NOT EXISTS items (id INTEGER PRIMARY KEY AUTOINCREMENT, value TEXT);'
+      );
+    });
+  }, []);
 
-export function addRecipe(title, description, instructions, callback) {
-  db.transaction(tx => {
-    tx.executeSql(
-      'INSERT INTO recipes (title, description, instructions) VALUES (?, ?, ?);',
-      [title, description, instructions],
-      (_, result) => callback(result.insertId),
-      (_, error) => { console.log(error); return false; }
-    );
-  });
-}
+  const addItem = () => {
+    db.transaction(tx => {
+      tx.executeSql('INSERT INTO items (value) VALUES (?)', ['Hello'], 
+        () => setResult('Item inserted'),
+        (t, error) => { console.log(error); setResult('Error ' + error.message); return false; }
+      );
+    });
+  };
 
-export function updateRecipe(id, title, description, instructions, callback) {
-  db.transaction(tx => {
-    tx.executeSql(
-      'UPDATE recipes SET title = ?, description = ?, instructions = ? WHERE id = ?;',
-      [title, description, instructions, id],
-      (_, result) => callback(result),
-      (_, error) => { console.log(error); return false; }
-    );
-  });
-}
+  const getItems = () => {
+    db.transaction(tx => {
+      tx.executeSql('SELECT * FROM items', [], 
+        (_, { rows }) => setResult(JSON.stringify(rows._array)),
+        (t, error) => { console.log(error); setResult('Error ' + error.message); return false; }
+      );
+    });
+  };
 
-export function deleteRecipe(id, callback) {
-  db.transaction(tx => {
-    tx.executeSql(
-      'DELETE FROM recipes WHERE id = ?;',
-      [id],
-      (_, result) => callback(result),
-      (_, error) => { console.log(error); return false; }
-    );
-  });
+  return (
+    <View style={{ marginTop: 50 }}>
+      <Button title="Add Item" onPress={addItem} />
+      <Button title="Get Items" onPress={getItems} />
+      <Text>{result}</Text>
+    </View>
+  );
 }
